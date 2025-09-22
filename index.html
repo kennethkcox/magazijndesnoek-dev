@@ -3,35 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Void</title>
+    <title>THE VOID</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div id="animated-bg"></div>
+    <div class="cursor"></div>
 
     <header class="hero">
-        <h1 class="venue-name">The Void</h1>
-        <p class="tagline">Where sound takes shape.</p>
+        <h1 class="venue-name">THE VOID</h1>
     </header>
 
-    <main id="content">
+    <main>
         <section id="upcoming-shows">
-            <h2>Upcoming Shows</h2>
+            <h2 class="section-title">UPCOMING</h2>
             <ul id="shows-list">
-                <!-- Shows will be dynamically inserted here by script.js -->
+                <!-- Shows will be injected here by script.js -->
             </ul>
+        </section>
+
+        <section id="info">
+            <h2 class="section-title">INFO</h2>
+            <div class="info-content">
+                <p>123 UNREAL ST.<br>NOWHERE, NS 00000</p>
+                <p>OPEN WHEN WE FEEL LIKE IT.</p>
+                <p>NO PHONE.</p>
+                <p><a href="mailto:contact@thevoid.show">contact@thevoid.show</a></p>
+            </div>
         </section>
     </main>
 
-    <footer id="info-contact">
-        <p>123 Fake Street, Anytown, USA</p>
-        <p>Email: <a href="mailto:contact@thevoid.com">contact@thevoid.com</a></p>
-        <div class="social-links">
-            <a href="#" target="_blank">Instagram</a>
-            <a href="#" target="_blank">Twitter</a>
-            <a href="#" target="_blank">Facebook</a>
+    <footer>
+        <div class="marquee">
+            <div class="marquee-content">
+                <span>@THEVOIDSHOWS</span>
+                <span>@THEVOIDSHOWS</span>
+                <span>@THEVOIDSHOWS</span>
+                <span>@THEVOIDSHOWS</span>
+                <span>@THEVOIDSHOWS</span>
+                <span>@THEVOIDSHOWS</span>
+                <span>@THEVOIDSHOWS</span>
+                <span>@THEVOIDSHOWS</span>
+            </div>
         </div>
     </footer>
 

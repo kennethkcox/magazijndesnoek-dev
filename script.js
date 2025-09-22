@@ -1,126 +1,170 @@
-// --- CONFIGURATION ---
-// IMPORTANT: Replace with your public GitHub repository path
-// The repository must have releases with titles formatted as: "Artist Name // YYYY-MM-DD"
-const GITHUB_REPO = 'tech-creative-cat/example-assets';
+document.addEventListener('DOMContentLoaded', () => {
 
-// --- DOM ELEMENTS ---
-const showsList = document.getElementById('shows-list');
-const upcomingShowsSection = document.getElementById('upcoming-shows');
-
-// --- HELPER FUNCTIONS ---
-
-/**
- * A simple Markdown parser. For this project, it just handles links.
- * @param {string} text - The Markdown text.
- * @returns {string} - The HTML representation.
- */
-function parseMarkdown(text) {
-    // Convert [link text](URL) to <a href="URL">link text</a>
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    return text.replace(linkRegex, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-}
-
-/**
- * Formats a Date object into a more readable string (e.g., "Oct 26").
- * @param {Date} date - The date to format.
- * @returns {string} - The formatted date string.
- */
-function formatDate(date) {
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-
-// --- MAIN LOGIC ---
-
-/**
- * Fetches, processes, and renders the upcoming shows.
- */
-async function loadShows() {
-    if (!showsList) return;
-
-    showsList.innerHTML = '<p>Loading shows...</p>';
-
-    try {
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases`);
-
-        if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
-        }
-
-        const releases = await response.json();
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Set to start of today for accurate comparison
-
-        const upcomingShows = releases
-            .map(release => {
-                const parts = release.name.split('//');
-                if (parts.length !== 2) return null;
-
-                const artist = parts[0].trim();
-                const dateStr = parts[1].trim();
-                const eventDate = new Date(dateStr);
-
-                // Adjust for timezone offset to treat date as UTC
-                const timezoneOffset = eventDate.getTimezoneOffset() * 60000;
-                const utcDate = new Date(eventDate.getTime() + timezoneOffset);
-
-
-                return {
-                    artist: artist,
-                    date: utcDate,
-                    details: release.body || 'No additional details provided.',
-                    url: release.html_url
-                };
-            })
-            .filter(show => show && show.date >= today)
-            .sort((a, b) => a.date - b.date);
-
-        renderShows(upcomingShows);
-
-    } catch (error) {
-        console.error('Failed to load shows:', error);
-        showsList.innerHTML = '<p>Could not load shows. Please check the repository configuration.</p>';
-    }
-}
-
-/**
- * Renders the list of shows into the DOM.
- * @param {Array} shows - An array of show objects.
- */
-function renderShows(shows) {
-    showsList.innerHTML = ''; // Clear loading message
-
-    if (shows.length === 0) {
-        showsList.innerHTML = '<p>No upcoming shows at the moment. Check back soon!</p>';
-        return;
+    /**
+     * ----------------------------------------------------------------
+     * SETUP: WRAP TEXT ELEMENTS FOR KINETIC ANIMATIONS
+     * ----------------------------------------------------------------
+     * We wrap each character in a span to animate them individually.
+     * This is a common technique for kinetic typography.
+     */
+    function wrapCharacters(selector) {
+        document.querySelectorAll(selector).forEach(element => {
+            element.innerHTML = element.textContent.trim().split('').map((char, i) =>
+                `<span class="char" style="--i:${i}">${char === ' ' ? '&nbsp;' : char}</span>`
+            ).join('');
+        });
     }
 
-    shows.forEach(show => {
-        const listItem = document.createElement('li');
-        listItem.className = 'show-item';
+    wrapCharacters('.venue-name');
+    wrapCharacters('.section-title');
 
-        const dateEl = document.createElement('div');
-        dateEl.className = 'show-date';
-        dateEl.textContent = formatDate(show.date);
 
-        const artistEl = document.createElement('div');
-        artistEl.className = 'show-artist';
-        artistEl.textContent = show.artist;
+    /**
+     * ----------------------------------------------------------------
+     * FEATURE: CUSTOM CURSOR
+     * ----------------------------------------------------------------
+     * Moves a custom DOM element to follow the mouse and expands
+     * on hover over interactive elements.
+     */
+    const cursor = document.querySelector('.cursor');
+    const interactiveElements = document.querySelectorAll('a, #shows-list li, .venue-name');
 
-        const infoBtn = document.createElement('a');
-        infoBtn.className = 'show-info-btn';
-        infoBtn.href = show.url;
-        infoBtn.textContent = 'More Info';
-        infoBtn.target = '_blank'; // Open in new tab
-
-        listItem.appendChild(dateEl);
-        listItem.appendChild(artistEl);
-        listItem.appendChild(infoBtn);
-
-        showsList.appendChild(listItem);
+    window.addEventListener('mousemove', e => {
+        // Using transform is more performant than top/left
+        cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
     });
-}
 
-// --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', loadShows);
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+    });
+
+
+    /**
+     * ----------------------------------------------------------------
+     * FEATURE: INTERACTIVE HERO TEXT
+     * ----------------------------------------------------------------
+     * Distorts the text based on mouse proximity to each character.
+     * This creates a "magnetic" or "wobbly" effect.
+     */
+    const venueName = document.querySelector('.venue-name');
+    if (venueName) {
+        const chars = venueName.querySelectorAll('.char');
+        venueName.addEventListener('mousemove', e => {
+            const rect = venueName.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            chars.forEach(char => {
+                const { left, top, width, height } = char.getBoundingClientRect();
+                const charCenterX = (left - rect.left) + width / 2;
+                const charCenterY = (top - rect.top) + height / 2;
+
+                const dx = mouseX - charCenterX;
+                const dy = mouseY - charCenterY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Max distance to affect the character
+                const maxDist = 150;
+
+                if (distance < maxDist) {
+                    const force = 1 - (distance / maxDist);
+                    const moveX = (dx / distance) * force * -10;
+                    const moveY = (dy / distance) * force * -10;
+                    char.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                } else {
+                    char.style.transform = 'translate(0,0)';
+                }
+            });
+        });
+
+        venueName.addEventListener('mouseleave', () => {
+             chars.forEach(char => {
+                char.style.transform = 'translate(0,0)';
+             });
+        });
+    }
+
+
+    /**
+     * ----------------------------------------------------------------
+     * FEATURE: SCROLL-TRIGGERED ANIMATIONS
+     * ----------------------------------------------------------------
+     * Uses IntersectionObserver to add a 'is-visible' class to
+     * elements when they enter the viewport, triggering CSS animations.
+     */
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const title = entry.target;
+                title.classList.add('is-visible');
+                // Stagger the character animation
+                title.querySelectorAll('.char').forEach((char, i) => {
+                    char.style.transitionDelay = `${i * 0.03}s`;
+                });
+                observer.unobserve(entry.target); // Animate only once
+            }
+        });
+    }, { threshold: 0.5 }); // Trigger when 50% of the element is visible
+
+    document.querySelectorAll('.section-title').forEach(title => {
+        observer.observe(title);
+    });
+
+
+    /**
+     * ----------------------------------------------------------------
+     * FEATURE: FETCH UPCOMING SHOWS FROM GITHUB RELEASES
+     * ----------------------------------------------------------------
+     * Fetches release data from a GitHub repo to dynamically populate
+     * the "Upcoming Shows" list.
+     */
+    async function fetchUpcomingShows() {
+        // --- IMPORTANT ---
+        // Replace with your GitHub username and repository name.
+        const githubOwner = 'The-Marquee';
+        const githubRepo = 'marquee-shows';
+        // -----------------
+
+        const apiUrl = `https://api.github.com/repos/${githubOwner}/${githubRepo}/releases`;
+        const listElement = document.getElementById('shows-list');
+
+        listElement.innerHTML = '<li>Loading shows...</li>';
+
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.statusText}`);
+            }
+            const releases = await response.json();
+
+            listElement.innerHTML = ''; // Clear loading message
+
+            if (releases.length === 0) {
+                listElement.innerHTML = '<li>No upcoming shows announced.</li>';
+                return;
+            }
+
+            releases.forEach(release => {
+                // The release name should be in the format "Artist Name // YYYY-MM-DD"
+                const showName = release.name || 'Unnamed Show';
+                const listItem = document.createElement('li');
+                listItem.textContent = showName;
+                listElement.appendChild(listItem);
+            });
+
+            // Re-apply cursor listeners to the new list items
+            listElement.querySelectorAll('li').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+            });
+
+        } catch (error) {
+            console.error('Failed to fetch shows:', error);
+            listElement.innerHTML = '<li>Could not load shows at this time.</li>';
+        }
+    }
+
+    fetchUpcomingShows();
+
+});
