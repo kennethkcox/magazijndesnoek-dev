@@ -1,0 +1,176 @@
+/* --- BASIC RESET & FONT --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+    background-color: #0a0a0a;
+    color: #f0f0f0;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* --- ANIMATED BACKGROUND --- */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #0a0a0a;
+    overflow: hidden;
+}
+
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-radial-gradient(circle, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 100px);
+    animation: noise 20s linear infinite;
+}
+
+@keyframes noise {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-5%, 5%); }
+    50% { transform: translate(5%, -5%); }
+    75% { transform: translate(5%, 5%); }
+    100% { transform: translate(0, 0); }
+}
+
+/* --- LAYOUT & TYPOGRAPHY --- */
+.hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.venue-name {
+    font-size: 5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #aaa;
+}
+
+#content {
+    padding: 50px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#upcoming-shows h2 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- SHOWS LIST STYLING --- */
+#shows-list {
+    list-style: none;
+}
+
+.show-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+    transition: background-color 0.3s ease;
+}
+
+.show-item:hover {
+    background-color: #1a1a1a;
+}
+
+.show-date {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    flex-basis: 120px;
+}
+
+.show-artist {
+    font-size: 1.5rem;
+    font-weight: 400;
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+.show-info-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid #f0f0f0;
+    color: #f0f0f0;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.show-info-btn:hover {
+    background-color: #f0f0f0;
+    color: #111;
+}
+
+/* --- FOOTER --- */
+#info-contact {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #000;
+    color: #888;
+}
+
+#info-contact p {
+    margin-bottom: 10px;
+}
+
+#info-contact a {
+    color: #aaa;
+    text-decoration: none;
+}
+
+#info-contact a:hover {
+    color: #fff;
+}
+
+.social-links a {
+    margin: 0 10px;
+    font-size: 1.2rem;
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .venue-name {
+        font-size: 3rem;
+    }
+
+    .tagline {
+        font-size: 1.2rem;
+    }
+
+    .show-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .show-date, .show-artist {
+        margin-bottom: 10px;
+    }
+}
