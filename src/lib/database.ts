@@ -1,6 +1,7 @@
+import { DO_JSON_DB_URL } from '$env/static/private';
 import type { Event } from '$lib/types';
 
-const DB_URL = process.env.DO_JSON_DB_URL;
+const DB_URL = DO_JSON_DB_URL;
 
 export async function getEvents(): Promise<Event[]> {
   const res = await fetch(`${DB_URL}/events`);
