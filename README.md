@@ -1,1 +1,0 @@
-# magazijndesnoek-dev
