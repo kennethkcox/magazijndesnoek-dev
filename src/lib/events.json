@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "event-1",
+    "artist": "The Midnight",
+    "date": "2025-12-01T20:00:00",
+    "description": "A night of synthwave and electronic music.",
+    "image": "https://via.placeholder.com/600x400",
+    "tickets": "https://www.example.com/tickets"
+  },
+  {
+    "slug": "event-2",
+    "artist": "The War on Drugs",
+    "date": "2025-12-15T20:00:00",
+    "description": "An evening of indie rock.",
+    "image": "https://via.placeholder.com/600x400",
+    "tickets": "https://www.example.com/tickets"
+  },
+  {
+    "slug": "event-3",
+    "artist": "Bon Iver",
+    "date": "2026-01-10T20:00:00",
+    "description": "An intimate acoustic set.",
+    "image": "https://via.placeholder.com/600x400",
+    "tickets": "https://www.example.com/tickets"
+  }
+]
