@@ -1,8 +1,10 @@
 import type { PageLoad } from './$types';
-import events from '$lib/events.json';
+import { getEvents } from '$lib/database';
+import type { Event } from '$lib/types';
 
 export const load: PageLoad = async ({ params }) => {
-  const event = events.find((event) => event.slug === params.slug);
+  const allEvents: Event[] = await getEvents();
+  const event = allEvents.find((event) => event.slug === params.slug);
   return {
     event,
   };
